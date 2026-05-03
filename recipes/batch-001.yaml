@@ -1,0 +1,82 @@
+# Lobster Lager V0 — Batch #001
+# Brewed: 2026-02-21
+# Equipment: Grainfather G30 (BLE-controlled via brewOS)
+# Brewmaster: Gerhard (eibachbraui)
+# Agent: OpenClaw
+
+batch:
+  name: "Lobster Lager V0"
+  number: 1
+  date: "2026-02-21"
+  style: "Amber Lager"
+  volume_liters: 24.5
+
+targets:
+  og_plato: 12.2
+  abv: 4.6
+  ibu: 20
+  ebc: 18
+
+grain_bill:
+  total_kg: 5.22
+  malts:
+    - name: Pilsner Malt
+      weight_kg: 3.53
+      percent: 67.6
+    - name: Munich Malt Type I
+      weight_kg: 1.20
+      percent: 23.0
+    - name: Caramel Malt Amber
+      weight_kg: 0.24
+      percent: 4.7
+    - name: Melanoidin Malt
+      weight_kg: 0.24
+      percent: 4.7
+
+hops:
+  - name: Mandarina Bavaria
+    weight_g: 16.0
+    addition: FWH  # First Wort Hop
+  - name: East Kent Golding
+    weight_g: 6.2
+    addition: "15 min"
+  - name: Mandarina Bavaria
+    weight_g: 2.0
+    addition: "15 min"
+  - name: East Kent Golding
+    weight_g: 17.0
+    addition: "5 min"
+
+yeast:
+  strain: "Fermentis Saflager W-34/70"
+  packs: 2
+  pitch_temp_c: 12
+
+mash_profile:
+  - step: Vorheizen
+    type: preheat
+    target_c: 65.0
+  - step: Einmaischen
+    type: infusion
+    target_c: 64.0
+  - step: Maltoserast
+    type: rest
+    target_c: 63.0
+    duration_min: 35
+  - step: Verzuckerung
+    type: saccharification
+    target_c: 72.0
+    duration_min: 30
+  - step: Abmaischen
+    type: mashout
+    target_c: 78.0
+    duration_min: 10
+
+boil:
+  duration_min: 90
+  target_c: 100.0
+
+fermentation:
+  target_c: 12.0
+  method: glycol_chiller
+  vessel: grainfather_conical
