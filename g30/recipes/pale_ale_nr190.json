@@ -1,0 +1,58 @@
+{
+  "name": "Pale Ale Kopie (Nr.190)",
+  "description": "Kompakte Schritte und Hopfengaben aus der PDF-Ausgabe Nr.190",
+  "boil_duration_min": 60,
+  "steps": [
+    {
+      "name": "Einmaischen",
+      "target_temp": 59.0,
+      "duration_min": 5.0,
+      "description": "Anfangstemperatur 59 °C, fünf Minuten halten, um den Maischeansatz zu stabilisieren."
+    },
+    {
+      "name": "Eiweissrast (57°)",
+      "target_temp": 58.0,
+      "duration_min": 12.0,
+      "description": "Kurze Eiweißrast bei 58 °C zur Ausfällung schwerer Proteine."
+    },
+    {
+      "name": "Maltoserast (60°-65°)",
+      "target_temp": 64.0,
+      "duration_min": 47.0,
+      "description": "Maltoserast für 47 Minuten bei 64 °C, um die Malzsüße aufzubauen."
+    },
+    {
+      "name": "Verzuckerung (70°-75°)",
+      "target_temp": 73.0,
+      "duration_min": 32.0,
+      "description": "Hohe Temperaturen, damit Enzyme die Stärke vollständig in vergärbare Zucker wandeln."
+    },
+    {
+      "name": "Abmaischen (78°)",
+      "target_temp": 78.0,
+      "duration_min": 1.0,
+      "description": "Kurz auf 78 °C, Pumpe stoppen und die Maische abschließen.",
+      "pump_action": "stop"
+    },
+    {
+      "name": "Kochzeit",
+      "target_temp": 100.0,
+      "duration_min": 60.0,
+      "description": "60 Minuten kochen, Hopfen nach Plan und klare Kochende."
+    }
+  ],
+  "hop_schedule": [
+    {
+      "name": "Fuggles",
+      "amount_g": 39.8,
+      "offset_min": 0.0,
+      "notes": "Komplette Kochzeit für die Bittere."
+    },
+    {
+      "name": "Goldings",
+      "amount_g": 31.9,
+      "offset_min": 40.0,
+      "notes": "20 Minuten vor Kochende für Aroma."
+    }
+  ]
+}

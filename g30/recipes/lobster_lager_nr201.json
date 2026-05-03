@@ -1,0 +1,64 @@
+{
+  "name": "Lobster Lager 1 (Nr.201)",
+  "description": "Maschplan und Hopfengaben aus der aktualisierten PDF vom 13.02.2026",
+  "boil_duration_min": 90,
+  "steps": [
+    {
+      "name": "Einmaischen",
+      "target_temp": 64.0,
+      "duration_min": 5.0,
+      "description": "Wasser auf 64 °C und 5 Minuten halten, um den Maischeansatz zu stabilisieren."
+    },
+    {
+      "name": "Maltoserast (60°-65°)",
+      "target_temp": 63.0,
+      "duration_min": 35.0,
+      "description": "Langsame Verzuckerung bei 63 °C zur Entwicklung der Malzbasis."
+    },
+    {
+      "name": "Verzuckerung (70°-75°)",
+      "target_temp": 72.0,
+      "duration_min": 20.0,
+      "description": "Temperatur auf 72 °C anheben und 20 Minuten halten, damit die Enzyme die Stärke in Zucker umwandeln."
+    },
+    {
+      "name": "Abmaischen (78°)",
+      "target_temp": 78.0,
+      "duration_min": 1.0,
+      "description": "Abmaischen, Pumpe stoppen, 78 °C kurz halten, um die Maische zu beenden.",
+      "pump_action": "stop"
+    },
+    {
+      "name": "Kochzeit",
+      "target_temp": 100.0,
+      "duration_min": 90.0,
+      "description": "Würze 90 Minuten kochen, die Hopfengaben über den ganzen Zeitraum verteilen."
+    }
+  ],
+  "hop_schedule": [
+    {
+      "name": "Mandarina Bavaria #642822 (Vorderwürze)",
+      "amount_g": 16.0,
+      "offset_min": 0.0,
+      "notes": "Bittere ohne Verlust über gesamte Kochzeit."
+    },
+    {
+      "name": "East Kent Golding #575326",
+      "amount_g": 6.2,
+      "offset_min": 75.0,
+      "notes": "15 Minuten vor Kochende für feine Aromen."
+    },
+    {
+      "name": "Mandarina Bavaria #642822 (Aroma)",
+      "amount_g": 2.0,
+      "offset_min": 75.0,
+      "notes": "Kurzer 15-Minuten-Stand für zusätzliche Fruchtigkeit."
+    },
+    {
+      "name": "Fuggles #520799",
+      "amount_g": 23.7,
+      "offset_min": 85.0,
+      "notes": "Letzte fünf Minuten, um frische Hopfenaromen zu bewahren."
+    }
+  ]
+}

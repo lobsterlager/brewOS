@@ -1,0 +1,58 @@
+{
+  "name": "Pils fürs Volk Kopie (Nr.191)",
+  "description": "Kompakter Maischplan und Hopfengaben für die Pils-Kopie",
+  "boil_duration_min": 75,
+  "steps": [
+    {
+      "name": "Einmaischen",
+      "target_temp": 63.0,
+      "duration_min": 5.0,
+      "description": "Schnelles Einmaischen auf 63 °C und kurz halten."
+    },
+    {
+      "name": "Maltoserast (60°-65°)",
+      "target_temp": 62.0,
+      "duration_min": 25.0,
+      "description": "Maltoserast bei 62 °C, um eine helle Malzbasis zu entwickeln."
+    },
+    {
+      "name": "Verzuckerung (70°-75°)",
+      "target_temp": 72.0,
+      "duration_min": 30.0,
+      "description": "Verzuckerung bei 72 °C für ausgewogene Fermentierbarkeit."
+    },
+    {
+      "name": "Abmaischen (78°)",
+      "target_temp": 78.0,
+      "duration_min": 1.0,
+      "description": "Kurz auf 78 °C zum Abmaischen, Pumpe ausschalten.",
+      "pump_action": "stop"
+    },
+    {
+      "name": "Kochzeit",
+      "target_temp": 100.0,
+      "duration_min": 75.0,
+      "description": "75 Minuten kochen, Hopfen für Bittere und Aroma addieren."
+    }
+  ],
+  "hop_schedule": [
+    {
+      "name": "Perle (Bitterhopfen)",
+      "amount_g": 23.0,
+      "offset_min": 0.0,
+      "notes": "Ganze Kochzeit für die Grundbittere."
+    },
+    {
+      "name": "Perle (Aroma)",
+      "amount_g": 20.0,
+      "offset_min": 35.0,
+      "notes": "Rund 40 Minuten vor Ende für ausbalancierte Aromatik."
+    },
+    {
+      "name": "Hallertauer Mittelfrüher",
+      "amount_g": 6.0,
+      "offset_min": 70.0,
+      "notes": "Letzte fünf Kochminuten für feine Hopfenfrische."
+    }
+  ]
+}
