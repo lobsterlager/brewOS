@@ -1,0 +1,57 @@
+{
+  "name": "TestSud (Nr.202)",
+  "description": "Kurz getesteter Sud mit mehreren Verzuckerungsrasten und hopfenstarker Kochzeit",
+  "boil_duration_min": 5,
+  "steps": [
+    {
+      "name": "Einmaischen",
+      "target_temp": 58.0,
+      "duration_min": 0.0,
+      "description": "Einmaischen gemäß PDF (0 min)."
+    },
+    {
+      "name": "Maltoserast (1. Verzuckerung)",
+      "target_temp": 57.0,
+      "duration_min": 1.0,
+      "description": "PDF: 1 min."
+    },
+    {
+      "name": "Zwischenrast",
+      "target_temp": 67.0,
+      "duration_min": 2.0,
+      "description": "PDF: 2 min."
+    },
+    {
+      "name": "Abmaischen",
+      "target_temp": 78.0,
+      "duration_min": 1.0,
+      "description": "PDF: 1 min."
+    },
+    {
+      "name": "Kochzeit",
+      "target_temp": 100.0,
+      "duration_min": 5.0,
+      "description": "Kochdauer gemäß PDF: 5 min. Ziel 100 °C."
+    }
+  ],
+  "hop_schedule": [
+    {
+      "name": "Columbus/Tomahawk/Zeus, CTZ #520799 (Vorderwürze)",
+      "amount_g": 10.0,
+      "offset_min": 5.0,
+      "notes": "PDF: Zeitpunkt Kochdauer 5 min (Vorderwürze)."
+    },
+    {
+      "name": "Amarillo #642822 (Kochen)",
+      "amount_g": 70.0,
+      "offset_min": 5.0,
+      "notes": "PDF: Kochdauer 5 min."
+    },
+    {
+      "name": "Amarillo #642822 (Kochen)",
+      "amount_g": 25.4,
+      "offset_min": 3.0,
+      "notes": "PDF: Kochdauer 3 min."
+    }
+  ]
+}

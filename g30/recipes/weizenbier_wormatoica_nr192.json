@@ -1,0 +1,57 @@
+{
+  "name": "Weizenbier Wormatoica Kopie (Nr.192)",
+  "description": "Weizen-Maische und Hopfengaben aus der PDF-Ausgabe mit 90-minütigem Koch", 
+  "boil_duration_min": 90,
+  "steps": [
+    {
+      "name": "Einmaischen",
+      "target_temp": 56.0,
+      "duration_min": 5.0,
+      "description": "Einmaischen auf 56 °C für ein helles Weizenbett."
+    },
+    {
+      "name": "Eiweissrast (57°)",
+      "target_temp": 55.0,
+      "duration_min": 15.0,
+      "description": "Eiweißrast bei 55 °C für 15 Minuten."
+    },
+    {
+      "name": "Maltoserast (60°-65°)",
+      "target_temp": 62.0,
+      "duration_min": 50.0,
+      "description": "Maltoserast bei 62 °C für volle 50 Minuten."
+    },
+    {
+      "name": "Verzuckerung (70°-75°)",
+      "target_temp": 72.0,
+      "duration_min": 20.0,
+      "description": "Verzuckerung bei 72 °C."
+    },
+    {
+      "name": "Abmaischen (78°)",
+      "target_temp": 78.0,
+      "duration_min": 1.0,
+      "description": "Abmaischen, Pumpe stoppen."
+    },
+    {
+      "name": "Kochzeit",
+      "target_temp": 100.0,
+      "duration_min": 90.0,
+      "description": "90 Minuten kochen, Hopfen zum Start und gegen Ende."
+    }
+  ],
+  "hop_schedule": [
+    {
+      "name": "Saphir",
+      "amount_g": 28.5,
+      "offset_min": 0.0,
+      "notes": "Vollständige Kochzeit für Grundbittere."
+    },
+    {
+      "name": "Saphir",
+      "amount_g": 24.2,
+      "offset_min": 75.0,
+      "notes": "15 Minuten vor Ende für feines Aroma."
+    }
+  ]
+}

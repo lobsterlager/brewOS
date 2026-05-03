@@ -1,0 +1,14 @@
+{
+  "name": "ACK Test 100°C",
+  "description": "Kurzer Test: auf 100°C heizen und ACK erwarten.",
+  "boil_duration_min": 0,
+  "steps": [
+    {
+      "name": "ACK Test",
+      "target_temp": 100.0,
+      "duration_min": 0.0,
+      "description": "Heize auf 100°C und warte auf Bestätigung."
+    }
+  ],
+  "hop_schedule": []
+}

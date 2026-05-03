@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Brew Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: 'Inter', system-ui, system-ui, -apple-system, sans-serif;
+      color: #f5f6fa;
+      background: #02030a;
+    }
+    body {
+      margin: 0;
+      padding: 1.4rem;
+      background: #02030a;
+    }
+    .ack-warning {
+      background: rgba(255, 123, 98, 0.12);
+      color: #ffe8d6;
+      border: 1px solid rgba(255, 123, 98, 0.5);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    h1 {
+      margin: 0;
+      letter-spacing: 0.08em;
+      font-size: 1.8rem;
+    }
+    .selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 0.4rem 0.8rem;
+    }
+    select {
+      border: none;
+      background: transparent;
+      color: #f5f6fa;
+      font-size: 0.95rem;
+      outline: none;
+      min-width: 240px;
+    }
+    .logo-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .brand-logo {
+      max-height: 56px;
+      width: auto;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.02);
+      padding: 0.3rem 0.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+    .tagline {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      margin-top: 0.25rem;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      background: #ff7b62;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 30px rgba(255, 123, 98, 0.4);
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .status-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    .status-pill {
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      letter-spacing: 0.04em;
+    }
+    .status-pill.ack-pill {
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.08);
+      color: #f5f6fa;
+    }
+    .status-pill.ack-pill.waiting {
+      border-color: #ffd392;
+      background: rgba(255, 211, 146, 0.2);
+      color: #fff8dc;
+    }
+    .status-pill.state-waiting {
+      border-color: #ffecb3;
+      background: rgba(255, 236, 179, 0.12);
+      color: #fff5d1;
+    }
+    .status-pill.connected {
+      border-color: rgba(102, 255, 182, 0.5);
+      background: rgba(102, 255, 182, 0.1);
+      color: #99ffd6;
+    }
+    .status-pill:not(.connected) {
+      border-color: rgba(255, 71, 71, 0.4);
+      background: rgba(255, 71, 71, 0.12);
+      color: #ffb3b3;
+    }
+    .main-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+      align-items: start;
+    }
+    .card {
+      background: #0f111d;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.2rem;
+      min-height: 140px;
+      box-shadow: 0 10px 30px rgba(3, 3, 7, 0.7);
+    }
+    .card h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #9ab8ff;
+    }
+    .value {
+      font-size: 2.1rem;
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+    .note {
+      margin-top: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+    .log-actions {
+      align-items: center;
+    }
+    .card .actions button.secondary {
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 12px rgba(3, 3, 7, 0.45);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+    }
+    .card .actions button.secondary:hover {
+      transform: translateY(-1px);
+    }
+    #log-content {
+      margin-top: 1rem;
+      background: #03040c;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1rem;
+      min-height: 160px;
+      max-height: 240px;
+      overflow: auto;
+      font-size: 0.85rem;
+      color: #dfe3ff;
+      white-space: pre-wrap;
+    }
+    :root {
+      --status-bar-height: 0px;
+      --status-bar-top: 64px;
+    }
+    body {
+      padding-top: var(--status-bar-height);
+    }
+    #status-bar {
+      position: fixed;
+      top: var(--status-bar-top);
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0.6rem 0 0.8rem;
+      background: rgba(8, 10, 16, 0.85);
+      backdrop-filter: blur(6px);
+      align-items: stretch;
+    }
+    #message {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      width: 100%;
+      text-align: center;
+      color: #f4ffb7;
+      padding: 0.35rem 0.6rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 17, 26, 0.75);
+      line-height: 1.35;
+    }
+    #message span {
+      display: block;
+    }
+    #temp-graph {
+      width: 100%;
+      height: 180px;
+      margin-top: 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: #03040c;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .start-feedback {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin: 0;
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 0.95rem;
+      backdrop-filter: blur(6px);
+      width: 100%;
+    }
+    .start-feedback.start-success {
+      border-color: rgba(102, 255, 182, 0.6);
+      background: rgba(102, 255, 182, 0.12);
+    }
+    .start-feedback.start-fail {
+      border-color: rgba(255, 99, 132, 0.6);
+      background: rgba(255, 99, 132, 0.12);
+    }
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    .row-2 { grid-row: 2; }
+    .col-1 { grid-column: 1 / span 3; }
+    .col-4 { grid-column: 4 / span 3; }
+    .col-9 { grid-column: 9 / span 3; }
+    .tall-card { min-height: 220px; }
+    .graph-card { min-height: 240px; }
+    .log-card { min-height: 240px; }
+    @media (max-width: 1200px) {
+      .main-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .span-8 { grid-column: span 6; }
+      .span-6 { grid-column: span 6; }
+      .span-4 { grid-column: span 6; }
+      .span-3 { grid-column: span 3; }
+      .row-2 { grid-row: auto; }
+      .col-1, .col-4, .col-9 { grid-column: span 3; }
+    }
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      .span-12, .span-8, .span-6, .span-4, .span-3 { grid-column: span 1; }
+      .col-9 { grid-column: span 1; }
+    }
+    .detail-list {
+      margin: 0.8rem 0 0;
+      padding-left: 1.1rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 0.95rem;
+    }
+    .detail-list li {
+      margin-bottom: 0.35rem;
+    }
+    .pill {
+      display: inline-flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .pill span {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .hop-section {
+      margin-top: 0.9rem;
+    }
+    .hop-section-title {
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 0.45rem;
+    }
+    .hop-backend-ack.active {
+      color: #9ff7c8;
+    }
+    .hop-backend-ack.inactive {
+      color: rgba(255, 255, 255, 0.55);
+    }
+    .hop-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .hop-empty {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .hop-row {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 0.8fr) auto;
+      gap: 0.6rem;
+      align-items: center;
+      padding: 0.6rem 0.7rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .hop-row.due {
+      border-color: rgba(255, 196, 94, 0.65);
+      background: rgba(255, 196, 94, 0.12);
+      box-shadow: 0 0 18px rgba(255, 196, 94, 0.15);
+    }
+    .hop-row.acked {
+      border-color: rgba(102, 255, 182, 0.45);
+      background: rgba(102, 255, 182, 0.08);
+      color: #d9ffe8;
+    }
+    .hop-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .hop-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .hop-meta {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    .hop-timing {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+    }
+    .hop-countdown {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.95rem;
+      text-align: right;
+    }
+    .hop-row button.secondary {
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 12px rgba(3, 3, 7, 0.45);
+      padding: 0.35rem 0.8rem;
+      font-size: 0.85rem;
+    }
+    .hop-row button.secondary.due {
+      background: rgba(255, 196, 94, 0.2);
+      border: 1px solid rgba(255, 196, 94, 0.6);
+      color: #fff3d6;
+    }
+    .hop-row button.secondary.acked {
+      background: rgba(102, 255, 182, 0.2);
+      border: 1px solid rgba(102, 255, 182, 0.6);
+      color: #d9ffe8;
+    }
+    #brew-control-card .actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    #brew-control-card select {
+      min-width: 180px;
+      padding: 0.4rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #f5f6fa;
+      font-size: 0.95rem;
+    }
+    .preheat-card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(8, 10, 26, 0.9));
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+    .preheat-card.preheating {
+      border-color: rgba(255, 166, 77, 0.5);
+      box-shadow: 0 0 25px rgba(255, 166, 77, 0.25);
+    }
+    .preheat-progress {
+      margin-top: 0.6rem;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .preheat-progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #ffbc74, #ff7b62);
+      transition: width 0.2s ease;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-row">
+      <img src="/media/openclaw-logo.svg" alt="OpenClaw" class="brand-logo" />
+      <img src="/media/eibach-logo.svg" alt="Eibachbraui" class="brand-logo" />
+    </div>
+    <h1>Brau Dashboard</h1>
+    <p class="tagline">Eibachbraui powered by OpenClaw</p>
+    <div class="selector">
+      <label for="recipe-select">Rezept auswählen</label>
+      <select id="recipe-select"></select>
+      <button id="select-recipe">Speichern</button>
+    </div>
+  </header>
+  <div id="status-bar">
+    <div id="start-feedback" class="start-feedback">
+      <span id="start-feedback-status">Letzter Start: –</span>
+      <span id="start-feedback-time">–</span>
+    </div>
+    <div id="message">
+      <span id="message-main">Warte auf Verbindung...</span>
+      <span id="message-sub">—</span>
+    </div>
+  </div>
+  <main class="main-grid">
+    <div class="card span-4 tall-card" id="recipe-details">
+      <h2>Rezeptdetails</h2>
+      <p id="recipe-description" class="note">Wähle ein Rezept, um die Details zu sehen.</p>
+      <p id="recipe-mash-report" class="note">Reporting-Info folgt nach Auswahl.</p>
+      <div class="pill" id="recipe-meta"></div>
+      <ul class="detail-list" id="recipe-steps"></ul>
+      <div class="pill" id="recipe-hops"></div>
+    </div>
+    <div class="card span-4 tall-card" id="brew-control-card">
+      <h2>Live-Brau</h2>
+      <div class="note" id="brew-recipe-name">Aktuelles Rezept: —</div>
+      <div class="value" id="brew-state-text">Status wird geladen…</div>
+      <div class="note" id="brew-timestamp">—</div>
+      <div class="note" id="ble-config-note">BLE: —</div>
+      <div class="actions">
+        <button id="start-brew">Brau starten</button>
+        <button id="stop-brew">Brau stoppen</button>
+        <button class="secondary" id="abort-brew">Not-Aus</button>
+        <button class="secondary" id="hardware-off">Hardware aus</button>
+        <button class="secondary" id="ack-brew" disabled>Bestätigen</button>
+        <div id="ack-banner" class="ack-warning" style="display:none">Warte auf deine Bestätigung oben (Bestätigen). Temperatur- und Pumpendaten erscheinen danach, Befehle wirken erst, wenn der Ablauf läuft.</div>
+      <div class="status-pills">
+        <span id="state-pill" class="status-pill">Status: —</span>
+        <span id="ack-pill" class="status-pill ack-pill">Ack: —</span>
+        <span id="ble-pill" class="status-pill">BLE: offline</span>
+      </div>
+      <div class="note" id="pump-timing-note" style="display:none">Pumpe startet automatisch mit dem Timerbeginn.</div>
+      </div>
+      <div class="note" style="display:none">Startbefehl: <code id="start-command"></code></div>
+      <div class="note">Befehl senden:</div>
+      <div class="actions">
+        <select id="command-select">
+          <option value="pause">Pause</option>
+          <option value="resume">Resume</option>
+          <option value="skip">Next</option>
+          <option value="next">Skip</option>
+          <option value="back">Zurück</option>
+          <option value="stop">Stop</option>
+        </select>
+        <button id="send-command">Senden</button>
+      </div>
+    </div>
+    <div class="card preheat-card span-3" id="preheat-card">
+      <h2>Schritt-Viewer</h2>
+      <div class="note" id="step-viewer-label">Aktueller Schritt</div>
+      <div class="value" id="preheat-state">Warte…</div>
+      <div class="note" id="preheat-temp">IST: — · Ziel: —</div>
+      <div class="note" id="preheat-note">Status: —</div>
+      <div class="preheat-progress">
+        <div class="preheat-progress-bar" id="preheat-progress-bar"></div>
+      </div>
+    </div>
+    <div class="card span-3 col-9 row-2" id="hop-card">
+      <h2>Hopfengaben</h2>
+      <div class="note" id="hop-summary">Rezept wird geladen…</div>
+      <div class="note hop-backend-ack" id="hop-backend-ack">Backend-Ack: —</div>
+      <div class="hop-section">
+        <div class="hop-section-title">Fällig</div>
+        <div class="hop-list" id="hop-list-due"></div>
+      </div>
+      <div class="hop-section">
+        <div class="hop-section-title">Offen</div>
+        <div class="hop-list" id="hop-list-open"></div>
+      </div>
+      <div class="hop-section">
+        <div class="hop-section-title">Bestätigt</div>
+        <div class="hop-list" id="hop-list-acked"></div>
+      </div>
+    </div>
+    <div class="card span-3 col-1 row-2" id="temp-card">
+      <h2>Ist-Temperatur</h2>
+      <div class="value" id="temp-value">—</div>
+      <div class="note" id="temp-note">Sensorwert in Echtzeit</div>
+      <div class="note" id="temp-target">Soll: —</div>
+      <div class="note" id="pump-heat">Pumpe: — · Heizung: — · Power: —</div>
+    </div>
+    <div class="card span-3 col-4 row-2" id="timer-card">
+      <h2>Timer / Countdown</h2>
+      <div class="value" id="brew-duration-value">—</div>
+      <div class="note" id="brew-start-label">Kein Brauvorgang aktiv</div>
+      <div class="note" id="timer-value">—</div>
+      <div class="note" id="timer-label">—</div>
+    </div>
+    <div class="card graph-card span-8 hidden" id="graph-card">
+      <h2>Temperaturverlauf</h2>
+      <canvas id="temp-graph"></canvas>
+      <div class="note" id="temp-graph-note">Warte auf Temperaturdaten…</div>
+    </div>
+    <div class="card log-card span-12" id="log-card">
+      <h2>Logfile-Archiv</h2>
+      <div class="note" id="log-status">Log bisher nicht geladen.</div>
+      <div class="note" id="log-monitor-tip">Logs erscheinen erst, sobald der Timer läuft und die Sensorwerte geschrieben werden.</div>
+      <div class="actions log-actions">
+        <select id="log-select" disabled>
+          <option>Wird geladen…</option>
+        </select>
+        <button class="secondary" id="show-log" disabled>Anzeigen</button>
+        <button class="secondary" id="refresh-logs">Aktualisieren</button>
+        <button class="secondary" id="download-log" disabled>Herunterladen</button>
+      </div>
+      <pre id="log-content">—</pre>
+    </div>
+  </main>
+  <script>
+    let currentSelection = null;
+    const logSelect = document.getElementById('log-select');
+    const logStatus = document.getElementById('log-status');
+    const logMonitorTip = document.getElementById('log-monitor-tip');
+    const logContent = document.getElementById('log-content');
+    const showLogButton = document.getElementById('show-log');
+    const refreshLogButton = document.getElementById('refresh-logs');
+    const downloadLogButton = document.getElementById('download-log');
+    const ackButton = document.getElementById('ack-brew');
+    const ackBanner = document.getElementById('ack-banner');
+    const statePill = document.getElementById('state-pill');
+    const blePill = document.getElementById('ble-pill');
+    const startFeedbackEl = document.getElementById('start-feedback');
+    const startFeedbackStatus = document.getElementById('start-feedback-status');
+    const startFeedbackTime = document.getElementById('start-feedback-time');
+    const messageMain = document.getElementById('message-main');
+    const messageSub = document.getElementById('message-sub');
+    const tempGraph = document.getElementById('temp-graph');
+    const hopListDue = document.getElementById('hop-list-due');
+    const hopListOpen = document.getElementById('hop-list-open');
+    const hopListAcked = document.getElementById('hop-list-acked');
+    const hopSummary = document.getElementById('hop-summary');
+    const hopBackendAck = document.getElementById('hop-backend-ack');
+    const preheatCard = document.getElementById('preheat-card');
+    const preheatTitle = preheatCard?.querySelector('h2');
+    const preheatState = document.getElementById('preheat-state');
+    const preheatTemp = document.getElementById('preheat-temp');
+    const preheatNote = document.getElementById('preheat-note');
+    const preheatProgress = document.getElementById('preheat-progress-bar');
+    const bleConfigNote = document.getElementById('ble-config-note');
+    const startCommandEl = document.getElementById('start-command');
+    const startCommand = 'source /Users/KriKri/gf-venv/bin/activate && python3 gf_brew_flow.py';
+    if (startCommandEl) {
+      startCommandEl.textContent = startCommand;
+    }
+    const tempGraphNote = document.getElementById('temp-graph-note');
+    const tempGraphCtx = tempGraph ? tempGraph.getContext('2d') : null;
+    const tempHistory = [];
+    let currentRecipeData = null;
+    let lastStatus = null;
+    let currentBrewSince = null;
+    const hopAlertFired = {};
+    const hopAckCache = {};
+    const GRAPH_MAX_POINTS = 60;
+
+    function setMainMessage(text) {
+      if (!messageMain) return;
+      messageMain.textContent = text || '—';
+    }
+
+    function setSubMessage(text) {
+      if (!messageSub) return;
+      messageSub.textContent = text || '—';
+    }
+
+    function updateAckBanner(state) {
+      if (!ackBanner) return;
+      if (state === 'waiting_ack') {
+        ackBanner.style.display = 'block';
+        ackBanner.textContent = 'Bestätigung erforderlich: Drücke "Bestätigen", sobald „Einmaischen beginnen“ erscheint, dann starten Timer und Sensorwerte.';
+      } else {
+        ackBanner.style.display = 'none';
+      }
+    }
+
+    function updateLogMonitorTip(state) {
+      if (!logMonitorTip) return;
+      if (state === 'waiting_ack') {
+        logMonitorTip.textContent = 'Logs erscheinen erst nach deiner Startbestätigung (Einmaischen), danach füllen sie sich live.';
+      } else if (state === 'preheating') {
+        logMonitorTip.textContent = 'Vorheizen läuft – Logs bleiben leer, bis der Timer startet.';
+      } else if (state === 'mashing') {
+        logMonitorTip.textContent = 'Maische läuft; Logs dokumentieren Timer und Temperaturwerte.';
+      } else if (state === 'boil') {
+        logMonitorTip.textContent = 'Kochphase und Hopfenaktionen werden im Log festgehalten.';
+      } else {
+        logMonitorTip.textContent = 'Log wird gerade gefüllt; klicke auf „Aktualisieren“, um den neuesten Eintrag zu sehen.';
+      }
+    }
+
+    function updateStatePill(state) {
+      if (!statePill) return;
+      statePill.textContent = `Status: ${state || '—'}`;
+      statePill.classList.toggle('state-waiting', state === 'waiting_ack');
+    }
+
+    function updateBlePill(connected) {
+      if (!blePill) return;
+      const isConnected = Boolean(connected);
+      blePill.textContent = `BLE: ${isConnected ? 'verbunden' : 'nicht verbunden'}`;
+      blePill.classList.toggle('connected', isConnected);
+    }
+
+    function updatePreheatCard(status) {
+      if (!preheatState || !preheatTemp || !preheatNote) return;
+      const isPreheating = status.state === 'preheating';
+      preheatCard?.classList.toggle('preheating', isPreheating);
+      if (isPreheating) {
+        const currentTemp = typeof status.current_temp === 'number' ? status.current_temp : parseFloat(status.current_temp);
+        const targetTemp = typeof status.target_temp === 'number' ? status.target_temp : parseFloat(status.target_temp);
+        const displayCurrent = Number.isFinite(currentTemp) ? `${currentTemp.toFixed(1)} °C` : '—';
+        const displayTarget = Number.isFinite(targetTemp) ? `${targetTemp.toFixed(1)} °C` : '—';
+        preheatState.textContent = 'Vorheizen';
+        preheatTemp.textContent = `IST: ${displayCurrent} · Ziel: ${displayTarget}`;
+        preheatNote.textContent = `Status: ${status.state}`;
+        if (Number.isFinite(currentTemp) && Number.isFinite(targetTemp) && targetTemp > 0) {
+          const pct = Math.min(100, Math.max(0, (currentTemp / targetTemp) * 100));
+          preheatProgress.style.width = `${pct}%`;
+        } else {
+          preheatProgress.style.width = '0%';
+        }
+      } else {
+        const currentTemp = typeof status.current_temp === 'number' ? status.current_temp : parseFloat(status.current_temp);
+        const targetTemp = typeof status.target_temp === 'number' ? status.target_temp : parseFloat(status.target_temp);
+        const displayCurrent = Number.isFinite(currentTemp) ? `${currentTemp.toFixed(1)} °C` : '—';
+        const displayTarget = Number.isFinite(targetTemp) ? `${targetTemp.toFixed(1)} °C` : '—';
+        preheatState.textContent = status.step || '—';
+        preheatTemp.textContent = `IST: ${displayCurrent} · Ziel: ${displayTarget}`;
+        preheatNote.textContent = `Status: ${status.state || '—'}`;
+        preheatProgress.style.width = '0%';
+      }
+    }
+
+    function updateAckPill(state) {
+      const ackPill = document.getElementById('ack-pill');
+      if (!ackPill) return;
+      const waiting = state === 'waiting_ack';
+      ackPill.textContent = waiting ? 'Ack: Bestätigung erforderlich' : 'Ack: bereit';
+      ackPill.classList.toggle('waiting', waiting);
+    }
+
+
+    function formatDuration(totalSeconds) {
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function formatDateTime(timestamp) {
+      if (!timestamp) {
+        return '—';
+      }
+      return new Date(timestamp * 1000).toLocaleString('de-DE', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+      });
+    }
+
+    async function refreshStartFeedback() {
+      if (!startFeedbackEl) return;
+      try {
+        const res = await fetch('/api/start-feedback');
+        if (!res.ok) {
+          throw new Error('Start-Feedback nicht erreichbar');
+        }
+        const payload = await res.json();
+        applyStartFeedback(payload);
+      } catch (error) {
+        if (startFeedbackStatus) {
+          startFeedbackStatus.textContent = 'Start-Feedback nicht erreichbar';
+        }
+        if (startFeedbackTime) {
+          startFeedbackTime.textContent = '—';
+        }
+        startFeedbackEl.classList.remove('start-success', 'start-fail');
+        startFeedbackEl.title = '';
+      }
+    }
+
+    function applyStartFeedback(payload) {
+      if (!startFeedbackEl || !startFeedbackStatus || !startFeedbackTime) {
+        return;
+      }
+      const success = payload?.success;
+      const message = payload?.message ? ` — ${payload.message}` : '';
+      const statusText =
+        success === true
+          ? 'Letzter Start erfolgreich'
+          : success === false
+            ? 'Start fehlgeschlagen'
+            : 'Noch kein Startversuch';
+      startFeedbackStatus.textContent = `${statusText}${message}`;
+      startFeedbackEl.title = payload?.message || '';
+      startFeedbackTime.textContent = payload?.timestamp ? formatDateTime(payload.timestamp) : '—';
+      startFeedbackEl.classList.toggle('start-success', success === true);
+      startFeedbackEl.classList.toggle('start-fail', success === false);
+    }
+
+    function formatBytes(bytes) {
+      if (typeof bytes !== 'number' || Number.isNaN(bytes)) {
+        return '0 B';
+      }
+      if (bytes < 1024) {
+        return `${bytes} B`;
+      }
+      const kb = bytes / 1024;
+      if (kb < 1024) {
+        return `${kb.toFixed(1)} KB`;
+      }
+      return `${(kb / 1024).toFixed(1)} MB`;
+    }
+
+    function formatLogTimestamp(ts) {
+      if (!ts) {
+        return 'unbekannt';
+      }
+      return new Date(ts * 1000).toLocaleString('de-DE', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+      });
+    }
+
+    function updateStatusBarHeight() {
+      const bar = document.getElementById('status-bar');
+      if (!bar) return;
+      const height = bar.offsetHeight || 0;
+      const topOffset = parseInt(
+        getComputedStyle(document.documentElement).getPropertyValue('--status-bar-top'),
+        10
+      ) || 0;
+      document.documentElement.style.setProperty('--status-bar-height', `${height + topOffset}px`);
+    }
+
+    function watchStatusBar() {
+      const bar = document.getElementById('status-bar');
+      if (!bar || typeof MutationObserver === 'undefined') return;
+      const observer = new MutationObserver(() => updateStatusBarHeight());
+      observer.observe(bar, { childList: true, subtree: true, characterData: true });
+    }
+
+    function updateTempGraph(temp) {
+      if (!tempGraphCtx) {
+        return;
+      }
+      const numeric = typeof temp === 'number' ? temp : Number(temp);
+      if (!Number.isFinite(numeric)) {
+        return;
+      }
+      tempHistory.push({ ts: Date.now(), value: numeric });
+      if (tempHistory.length > GRAPH_MAX_POINTS) {
+        tempHistory.shift();
+      }
+      drawTempGraph();
+    }
+
+    function resizeTempGraph() {
+      if (!tempGraph || !tempGraphCtx) {
+        return;
+      }
+      const ratio = window.devicePixelRatio || 1;
+      const width = tempGraph.clientWidth;
+      const height = tempGraph.clientHeight;
+      if (!width || !height) {
+        return;
+      }
+      tempGraph.width = width * ratio;
+      tempGraph.height = height * ratio;
+      tempGraphCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      drawTempGraph();
+    }
+
+    function drawTempGraph() {
+      if (!tempGraph || !tempGraphCtx) {
+        return;
+      }
+      const width = tempGraph.clientWidth;
+      const height = tempGraph.clientHeight;
+      if (!width || !height) {
+        return;
+      }
+      tempGraphCtx.clearRect(0, 0, width, height);
+      tempGraphCtx.fillStyle = '#03040c';
+      tempGraphCtx.fillRect(0, 0, width, height);
+      if (!tempHistory.length) {
+        tempGraphCtx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        tempGraphCtx.font = '13px Inter';
+        tempGraphCtx.fillText('Warte auf Temperaturdaten…', 12, height / 2);
+        if (tempGraphNote) {
+          tempGraphNote.textContent = 'Noch keine Daten.';
+        }
+        return;
+      }
+      const values = tempHistory.map((entry) => entry.value);
+      const minTemp = Math.min(...values);
+      const maxTemp = Math.max(...values);
+      const range = Math.max(0.5, maxTemp - minTemp);
+      const stepX = width / Math.max(tempHistory.length - 1, 1);
+      const points = tempHistory.map((entry, index) => {
+        const normalized = (entry.value - minTemp) / range;
+        return {
+          x: index * stepX,
+          y: height - normalized * height,
+          value: entry.value,
+          ts: entry.ts,
+        };
+      });
+      tempGraphCtx.beginPath();
+      tempGraphCtx.moveTo(0, height);
+      points.forEach((point) => tempGraphCtx.lineTo(point.x, point.y));
+      tempGraphCtx.lineTo(width, height);
+      tempGraphCtx.closePath();
+      const gradient = tempGraphCtx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, 'rgba(255, 123, 98, 0.35)');
+      gradient.addColorStop(1, 'rgba(255, 123, 98, 0.02)');
+      tempGraphCtx.fillStyle = gradient;
+      tempGraphCtx.fill();
+
+      tempGraphCtx.beginPath();
+      tempGraphCtx.moveTo(points[0].x, points[0].y);
+      points.slice(1).forEach((point) => tempGraphCtx.lineTo(point.x, point.y));
+      tempGraphCtx.strokeStyle = '#ff7b62';
+      tempGraphCtx.lineWidth = 2;
+      tempGraphCtx.stroke();
+
+      const lastPoint = points[points.length - 1];
+      tempGraphCtx.beginPath();
+      tempGraphCtx.arc(lastPoint.x, lastPoint.y, 4, 0, Math.PI * 2);
+      tempGraphCtx.fillStyle = '#ff7b62';
+      tempGraphCtx.fill();
+      tempGraphCtx.lineWidth = 1;
+      tempGraphCtx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      tempGraphCtx.stroke();
+
+      if (tempGraphNote) {
+        tempGraphNote.textContent = `Aktuell ${lastPoint.value.toFixed(1)} °C · ${formatDateTime(lastPoint.ts / 1000)}`;
+      }
+    }
+
+    function updateBrewDuration(brew) {
+      const durationEl = document.getElementById('brew-duration-value');
+      const startEl = document.getElementById('brew-start-label');
+      if (brew.running && brew.since) {
+        const elapsed = Math.max(0, Math.floor(Date.now() / 1000 - brew.since));
+        durationEl.textContent = formatDuration(elapsed);
+        startEl.textContent = `Gestartet: ${formatDateTime(brew.since)}`;
+      } else {
+        durationEl.textContent = '00:00:00';
+        startEl.textContent = 'Kein Brauvorgang aktiv';
+      }
+    }
+
+    async function refreshLogList() {
+      try {
+        const res = await fetch('/api/logs');
+        if (!res.ok) {
+          throw new Error('Logs nicht erreichbar');
+        }
+        const data = await res.json();
+        const logs = Array.isArray(data.logs) ? data.logs : [];
+        if (!logs.length) {
+          logSelect.innerHTML = '<option value="">Keine Logs vorhanden</option>';
+          logSelect.disabled = true;
+          showLogButton.disabled = true;
+          downloadLogButton.disabled = true;
+          logStatus.textContent = 'Keine Logdateien gefunden.';
+          logContent.textContent = '—';
+          return;
+        }
+        logSelect.disabled = false;
+        showLogButton.disabled = false;
+        downloadLogButton.disabled = false;
+        logSelect.innerHTML = logs
+          .map(
+            (log) =>
+              `<option value="${log.name}" data-url="${log.path ? '/' + log.path : ''}">` +
+              `${log.name} · ${formatBytes(log.size)} · ${formatLogTimestamp(log.modified_at)}` +
+              `</option>`
+          )
+          .join('');
+        logSelect.selectedIndex = 0;
+        logSelect.dispatchEvent(new Event('change'));
+        logStatus.textContent = `Letzter Log: ${formatLogTimestamp(logs[0].modified_at)}`;
+        logContent.textContent = 'Log auswählen und „Anzeigen“ klicken.';
+      } catch (err) {
+        logStatus.textContent = 'Logs konnten nicht geladen werden.';
+        logContent.textContent = '—';
+        logSelect.innerHTML = '<option value="">Fehler</option>';
+        logSelect.disabled = true;
+        showLogButton.disabled = true;
+        downloadLogButton.disabled = true;
+      }
+    }
+
+    async function refreshBleConfig() {
+      if (!bleConfigNote) return;
+      try {
+        const res = await fetch('/api/ble-config');
+        if (!res.ok) throw new Error('BLE-Konfig nicht erreichbar');
+        const payload = await res.json();
+        const name = payload?.ble_name || '—';
+        const address = payload?.ble_address || '—';
+        bleConfigNote.textContent = `BLE: ${name} · ${address}`;
+      } catch (err) {
+        bleConfigNote.textContent = 'BLE: —';
+      }
+    }
+
+    async function loadLogContent(name) {
+      if (!name) {
+        return;
+      }
+      try {
+        const res = await fetch(`/api/logs/${encodeURIComponent(name)}`);
+        if (!res.ok) {
+          throw new Error('Log konnte nicht geladen werden');
+        }
+        const data = await res.json();
+        logContent.textContent = data.content || 'Log ist leer.';
+        logStatus.textContent = `Angezeigt: ${data.name}`;
+      } catch (error) {
+        logContent.textContent = 'Log konnte nicht geladen werden.';
+      }
+    }
+
+    async function refreshStatus() {
+      try {
+        const res = await fetch(`/status/brew_status.json?ts=${Date.now()}`);
+        if (!res.ok) throw new Error('Status nicht erreichbar');
+        const status = await res.json();
+        lastStatus = status;
+        setMainMessage(status.last_message || 'Alles bereit');
+        if (ackButton) {
+          ackButton.disabled = status.state !== 'waiting_ack';
+        }
+        updateAckBanner(status.state);
+        updateAckPill(status.state);
+        updateStatePill(status.state);
+        updateBlePill(status.ble_connected);
+        updateLogMonitorTip(status.state);
+        updatePreheatCard(status);
+        document.getElementById('temp-value').textContent = (status.current_temp ?? '??') + ' °C';
+        document.getElementById('temp-target').textContent = 'Soll: ' + (status.target_temp ?? '??') + ' °C';
+        const currentTemp = typeof status.current_temp === 'number' ? status.current_temp : parseFloat(status.current_temp);
+        const targetTemp = typeof status.target_temp === 'number' ? status.target_temp : parseFloat(status.target_temp);
+        const deviation = Number.isFinite(currentTemp) && Number.isFinite(targetTemp)
+          ? (currentTemp - targetTemp).toFixed(1)
+          : null;
+        document.getElementById('temp-note').textContent = deviation
+          ? `Abweichung: ${deviation} °C`
+          : 'Sensorwert in Echtzeit';
+        document.getElementById('pump-heat').textContent =
+          'Pumpe: ' + (status.pump ? 'On' : 'Off') + ' · Heizung: ' + (status.heat ? 'On' : 'Off') +
+          ' · Power: ' + (status.power_pct ?? '—');
+        if (status.timer_active) {
+          const mins = Math.floor((status.timer_remaining ?? 0) / 60)
+            .toString()
+            .padStart(2, '0');
+          const secs = ((status.timer_remaining ?? 0) % 60).toString().padStart(2, '0');
+          document.getElementById('timer-value').textContent = `Verbleibend: ${mins}:${secs}`;
+          document.getElementById('timer-label').textContent = status.timer_label
+            ? `Timer: ${status.timer_label}`
+            : 'Timer läuft';
+        } else {
+          document.getElementById('timer-value').textContent = 'Verbleibend: —';
+          document.getElementById('timer-label').textContent = 'Kein aktiver Timer';
+        }
+        updateHopSchedule(status);
+        updateTempGraph(status.current_temp);
+        updateLogMonitorTip(status.state);
+      } catch (err) {
+        setMainMessage('Status nicht erreichbar');
+      }
+    }
+
+    function resetLiveDisplay() {
+      setMainMessage('Bereit für neuen Lauf');
+      document.getElementById('temp-value').textContent = '— °C';
+      document.getElementById('temp-note').textContent = 'Sensorwert in Echtzeit';
+      document.getElementById('temp-target').textContent = 'Soll: — °C';
+      document.getElementById('pump-heat').textContent = 'Pumpe: — · Heizung: — · Power: —';
+      document.getElementById('timer-value').textContent = '—';
+      document.getElementById('timer-label').textContent = '—';
+      document.getElementById('brew-duration-value').textContent = '00:00:00';
+      document.getElementById('brew-start-label').textContent = 'Kein Brauvorgang aktiv';
+      if (hopSummary) {
+        hopSummary.textContent = 'Kein aktives Rezept geladen.';
+      }
+      if (hopListDue) hopListDue.innerHTML = '';
+      if (hopListOpen) hopListOpen.innerHTML = '';
+      if (hopListAcked) hopListAcked.innerHTML = '';
+      const ackPillEl = document.getElementById('ack-pill');
+      if (ackPillEl) {
+        ackPillEl.textContent = 'Ack: —';
+        ackPillEl.classList.remove('waiting');
+      }
+    }
+
+    async function updateRecipeList() {
+      try {
+        const [recipesRes, currentRes] = await Promise.all([
+          fetch('/api/recipes'),
+          fetch('/api/current'),
+        ]);
+        if (!recipesRes.ok || !currentRes.ok) throw new Error('Fehler');
+        const recipes = await recipesRes.json();
+        const current = await currentRes.json();
+        currentSelection = current;
+        const select = document.getElementById('recipe-select');
+        select.innerHTML = recipes
+          .map(
+            (entry) =>
+              `<option value="${entry.path}" ${entry.path === current.path ? 'selected' : ''}>${entry.name}</option>`
+          )
+          .join('');
+        renderRecipeDetails(current.path);
+      } catch (err) {
+        document.getElementById('recipe-description').textContent = 'Rezepte konnten nicht geladen werden.';
+      }
+    }
+
+    async function renderRecipeDetails(path) {
+      try {
+        const res = await fetch(`/${path}`);
+        if (!res.ok) throw new Error('Fehler beim Laden');
+        const recipe = await res.json();
+        currentRecipeData = recipe;
+        document.getElementById('recipe-description').textContent = recipe.description || 'Kein Text verfügbar.';
+        const mashReport = document.getElementById('recipe-mash-report');
+        let mashReportTemp = recipe.mash_report_temp;
+        if (!mashReportTemp && Array.isArray(recipe.steps)) {
+          const mashStep = recipe.steps.find((step) =>
+            String(step?.name || '').toLowerCase().includes('einmaischen')
+          );
+          if (mashStep && typeof mashStep.target_temp === 'number') {
+            mashReportTemp = mashStep.target_temp;
+          }
+        }
+        if (typeof mashReportTemp === 'number' && Number.isFinite(mashReportTemp)) {
+          mashReport.textContent = `Reporting-Einmaischtemperatur: ${mashReportTemp.toFixed(1)} °C`;
+        } else {
+          mashReport.textContent = 'Reporting-Einmaischtemperatur: nicht definiert.';
+        }
+        const stepsList = document.getElementById('recipe-steps');
+        stepsList.innerHTML = (recipe.steps || [])
+          .map(
+            (step) =>
+              `<li><strong>${step.name}</strong>: ${step.target_temp} °C · ${step.duration_min} min</li>`
+          )
+          .join('');
+        const meta = document.getElementById('recipe-meta');
+        meta.innerHTML = [`Rezept: ${recipe.name}`, `Schritte: ${(recipe.steps || []).length}`]
+          .map((m) => `<span>${m}</span>`)
+          .join('');
+        const hops = document.getElementById('recipe-hops');
+        if (recipe.hop_schedule?.length) {
+          const boilDuration = Number(recipe.boil_duration_min);
+          hops.innerHTML = recipe.hop_schedule
+            .map((hop) => {
+              const amount = hop.amount_g ?? hop.amount ?? '—';
+              const offset = hop.offset_min ?? hop.offset;
+              const name = hop.name || 'Hopfen';
+              const lower = String(name).toLowerCase();
+              const isFront = lower.includes('vorderwürze') || lower.includes('vorderwuerze') || lower.includes('front');
+              if (isFront) {
+                return `<span>${name} → Vorderwürze (${amount} g)</span>`;
+              }
+              if (Number.isFinite(boilDuration) && Number.isFinite(Number(offset))) {
+                return `<span>${name} → -${offset} min vor Ende (${amount} g)</span>`;
+              }
+              if (offset != null) {
+                return `<span>${name} → +${offset} min (${amount} g)</span>`;
+              }
+              return `<span>${name} (${amount} g)</span>`;
+            })
+            .join('');
+        } else {
+          hops.innerHTML = '<span>Keine Hopfenzugaben</span>';
+        }
+        updateHopSchedule(lastStatus, recipe);
+      } catch (err) {
+        document.getElementById('recipe-description').textContent = 'Detailanzeige fehlgeschlagen.';
+      }
+    }
+
+    async function refreshBrewControl() {
+      try {
+        const res = await fetch('/api/brew');
+        if (!res.ok) throw new Error('Brew-Status konnte nicht geladen werden.');
+        const brew = await res.json();
+        updateBrewControls(brew);
+        updateBrewDuration(brew);
+      } catch (err) {
+        document.getElementById('brew-state-text').textContent = 'Brew-Status nicht erreichbar';
+      }
+    }
+
+    function formatTimestamp(since) {
+      if (!since) return '—';
+      const diff = Date.now() / 1000 - since;
+      const min = Math.floor(diff / 60);
+      const sec = Math.floor(diff % 60)
+        .toString()
+        .padStart(2, '0');
+      return `${min} min ${sec} s gelaufen`;
+    }
+
+    function updateBrewControls(brew) {
+      document.getElementById('brew-state-text').textContent = brew.running ? 'Brau läuft (PID ' + brew.pid + ')' : 'Kein Brauvorgang aktiv';
+      document.getElementById('brew-recipe-name').textContent = `Aktuelles Rezept: ${brew.recipe || '—'}`;
+      document.getElementById('brew-timestamp').textContent = brew.running ? formatTimestamp(brew.since) : '—';
+      currentBrewSince = brew.running ? brew.since : null;
+      if (brew.last_command) {
+        setSubMessage(`Letzter Befehl: ${brew.last_command}`);
+      } else {
+        setSubMessage('—');
+      }
+      const pumpNote = document.getElementById('pump-timing-note');
+      if (pumpNote) {
+        pumpNote.textContent = brew.timer_active
+          ? 'Pumpe läuft, weil der Timer aktiv ist.'
+          : 'Pumpe startet erst mit dem Timerbeginn.';
+      }
+      updateAckBanner(brew.state);
+    }
+
+    function isFrontWortHop(name) {
+      const lower = String(name || '').toLowerCase();
+      return lower.includes('vorderw') || lower.includes('vorderwu') || lower.includes('front');
+    }
+
+    function normalizeHopSchedule(recipe) {
+      if (!recipe?.hop_schedule?.length) return [];
+      const boilDuration = Number(recipe.boil_duration_min);
+      return recipe.hop_schedule.map((hop, index) => {
+        const amount = hop.amount_g ?? hop.amount ?? '—';
+        const offset = hop.offset_min ?? hop.offset;
+        const offsetMin = Number.isFinite(Number(offset)) ? Number(offset) : null;
+        const name = hop.name || `Hopfen ${index + 1}`;
+        const frontWort = isFrontWortHop(name);
+        const boilStart = !frontWort && Number.isFinite(offsetMin) && Number.isFinite(boilDuration)
+          ? Math.abs(offsetMin - boilDuration) < 0.01
+          : false;
+        const type = frontWort ? 'front_wort' : (boilStart ? 'boil_start' : 'timed');
+        return {
+          id: index,
+          name,
+          amount,
+          offsetMin,
+          boilDuration,
+          type,
+        };
+      });
+    }
+
+    function hopAckKey(hop, recipe, brewSince) {
+      const recipeName = recipe?.name || 'unknown-recipe';
+      const run = brewSince ?? 'no-run';
+      return `hopAck:${recipeName}:${run}:${hop.id}`;
+    }
+
+    function getHopAcked(key, status) {
+      const map = status?.hop_acks || hopAckCache;
+      const entry = map ? map[key] : null;
+      if (entry == null) return false;
+      if (typeof entry === 'boolean') return entry;
+      return Boolean(entry.acked ?? entry.done ?? entry.confirmed ?? entry.value ?? entry);
+    }
+
+    function formatCountdown(seconds) {
+      const safe = Math.max(0, Math.floor(seconds));
+      const mins = Math.floor(safe / 60).toString().padStart(2, '0');
+      const secs = (safe % 60).toString().padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    let hopAudioContext = null;
+    let hopAudioUnlocked = false;
+
+    function unlockHopAudio() {
+      if (hopAudioUnlocked) return;
+      try {
+        hopAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (hopAudioContext.state === 'suspended') {
+          hopAudioContext.resume();
+        }
+        hopAudioUnlocked = true;
+      } catch (err) {
+        // ignore audio errors
+      }
+    }
+
+    ['click', 'touchstart', 'keydown'].forEach((evt) => {
+      document.addEventListener(evt, unlockHopAudio, { once: true, passive: true });
+    });
+
+    function playHopAlert() {
+      try {
+        if (!hopAudioUnlocked || !hopAudioContext) return;
+        if (hopAudioContext.state === 'suspended') {
+          hopAudioContext.resume();
+        }
+        const ctx = hopAudioContext;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.value = 0.12;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      } catch (err) {
+        // ignore audio errors
+      }
+    }
+
+    function hopTimingLabel(hop) {
+      if (hop.type === 'front_wort') {
+        return 'Vorderwürze (bei Aufheizen auf 100 °C)';
+      }
+      if (hop.type === 'boil_start') {
+        return 'Zum Kochbeginn';
+      }
+      if (Number.isFinite(hop.offsetMin)) {
+        return `-${hop.offsetMin} min vor Kochende`;
+      }
+      return 'Zeitpunkt nicht definiert';
+    }
+
+    function updateHopSchedule(status, recipeOverride = null) {
+      if (!hopSummary || !hopListDue || !hopListOpen || !hopListAcked) return;
+      const recipe = recipeOverride || currentRecipeData;
+      const schedule = normalizeHopSchedule(recipe);
+      if (hopBackendAck) {
+        const hasBackendAck = status?.hop_acks && Object.keys(status.hop_acks || {}).length > 0;
+        hopBackendAck.textContent = `Backend-Ack: ${hasBackendAck ? 'aktiv' : 'inaktiv'}`;
+        hopBackendAck.classList.toggle('active', hasBackendAck);
+        hopBackendAck.classList.toggle('inactive', !hasBackendAck);
+      }
+      if (!schedule.length) {
+        hopSummary.textContent = 'Keine Hopfenzugaben im aktuellen Rezept.';
+        hopListDue.innerHTML = '<div class="hop-empty">Keine fälligen Hopfengaben.</div>';
+        hopListOpen.innerHTML = '<div class="hop-empty">Keine offenen Hopfengaben.</div>';
+        hopListAcked.innerHTML = '<div class="hop-empty">Noch nichts bestätigt.</div>';
+        return;
+      }
+      const stepText = `${status?.step || ''} ${status?.timer_label || ''}`.toLowerCase();
+      const isBoilStep = status?.state === 'boil';
+      const isPreheatBoil = status?.state === 'preheating' && stepText.includes('koch');
+      const timerActive = Boolean(status?.timer_active);
+      const timerRemaining = Number(status?.timer_remaining);
+      const timerDuration = Number(status?.timer_duration);
+      hopSummary.textContent = timerActive
+        ? `Koch-Timer aktiv · ${formatCountdown(timerRemaining)} verbleibend`
+        : 'Timer inaktiv – warte auf Kochbeginn.';
+
+      const dueRows = [];
+      const openRows = [];
+      const ackedRows = [];
+      schedule.forEach((hop) => {
+          const key = hopAckKey(hop, recipe, currentBrewSince);
+          const acked = getHopAcked(key, status);
+          let due = false;
+          let countdownText = '—';
+          let timingText = hopTimingLabel(hop);
+
+          if (status?.hop_event && String(status.hop_event).includes(hop.name) && (isBoilStep || hop.type === 'front_wort')) {
+            due = true;
+          }
+
+          if (hop.type === 'front_wort') {
+            if (isPreheatBoil) {
+              due = true;
+              countdownText = 'Jetzt';
+              timingText = 'Jetzt: Vorderwürze';
+            } else {
+              countdownText = '—';
+            }
+          } else if (hop.type === 'boil_start') {
+            const atBoilStart = isBoilStep && timerActive && Number.isFinite(timerDuration)
+              ? (timerDuration - timerRemaining) <= 2
+              : status?.state === 'boil';
+            if (atBoilStart) {
+              due = true;
+              countdownText = 'Jetzt';
+              timingText = 'Jetzt: Kochbeginn';
+            } else {
+              countdownText = '—';
+            }
+          } else if (timerActive && isBoilStep && Number.isFinite(timerRemaining) && Number.isFinite(hop.offsetMin)) {
+            const secondsUntil = timerRemaining - hop.offsetMin * 60;
+            if (secondsUntil > 0) {
+              countdownText = formatCountdown(secondsUntil);
+            } else {
+              due = true;
+              countdownText = 'Fällig';
+            }
+          } else {
+            countdownText = 'Wartet';
+          }
+
+          if (due && !acked && !hopAlertFired[key]) {
+            hopAlertFired[key] = true;
+            playHopAlert();
+          }
+
+          const rowClass = `${due ? 'due' : ''} ${acked ? 'acked' : ''}`.trim();
+          const buttonClass = `${due ? 'due' : ''} ${acked ? 'acked' : ''}`.trim();
+          const buttonText = acked ? 'Bestätigt' : 'Bestätigen';
+          const rowHtml = `
+            <div class="hop-row ${rowClass}" data-hop-key="${key}">
+              <div class="hop-main">
+                <div class="hop-name">${hop.name}</div>
+                <div class="hop-meta">${hop.amount} g</div>
+              </div>
+              <div class="hop-timing">${timingText}</div>
+              <div class="hop-countdown">${countdownText}</div>
+              <button class="secondary ${buttonClass}" data-hop-action="ack">${buttonText}</button>
+            </div>
+          `;
+          if (acked) {
+            ackedRows.push(rowHtml);
+          } else if (due) {
+            dueRows.push(rowHtml);
+          } else {
+            openRows.push(rowHtml);
+          }
+        });
+
+      hopListDue.innerHTML = dueRows.length
+        ? dueRows.join('')
+        : '<div class="hop-empty">Keine fälligen Hopfengaben.</div>';
+      hopListOpen.innerHTML = openRows.length
+        ? openRows.join('')
+        : '<div class="hop-empty">Keine offenen Hopfengaben.</div>';
+      hopListAcked.innerHTML = ackedRows.length
+        ? ackedRows.join('')
+        : '<div class="hop-empty">Noch nichts bestätigt.</div>';
+    }
+
+    async function postBrewAction(path, body = null) {
+      const res = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Aktion fehlgeschlagen');
+      }
+      return res.json();
+    }
+
+    document.getElementById('start-brew').addEventListener('click', async () => {
+      try {
+        await postBrewAction('/api/start');
+        setMainMessage('Brew startet...');
+        refreshBrewControl();
+        refreshStartFeedback();
+      } catch (err) {
+        setMainMessage(err.message);
+        refreshStartFeedback();
+      }
+    });
+
+    document.getElementById('stop-brew').addEventListener('click', async () => {
+      try {
+        await postBrewAction('/api/stop');
+        setMainMessage('Brew wird gestoppt.');
+        refreshBrewControl();
+      } catch (err) {
+        setMainMessage(err.message);
+      }
+    });
+
+    if (ackButton) {
+      ackButton.addEventListener('click', async () => {
+        try {
+          await postBrewAction('/api/ack');
+          setMainMessage('Start bestätigt.');
+          refreshStatus();
+          refreshBrewControl();
+        } catch (err) {
+          setMainMessage(err.message);
+        }
+      });
+    }
+    const abortButton = document.getElementById('abort-brew');
+    if (abortButton) {
+      abortButton.addEventListener('click', async () => {
+        try {
+          await postBrewAction('/api/abort');
+          setMainMessage('Brew wurde abgebrochen.');
+          refreshBrewControl();
+        } catch (err) {
+          setMainMessage(err.message);
+        }
+      });
+    }
+
+    const hardwareOffButton = document.getElementById('hardware-off');
+    if (hardwareOffButton) {
+      hardwareOffButton.addEventListener('click', async () => {
+        try {
+          await postBrewAction('/api/hardware-off');
+          setMainMessage('Hardware wird heruntergefahren.');
+          refreshStatus();
+          refreshBrewControl();
+        } catch (err) {
+          setMainMessage(err.message);
+        }
+      });
+    }
+
+    function hopListClickHandler(event) {
+        const button = event.target.closest('[data-hop-action="ack"]');
+        if (!button) return;
+        const row = button.closest('[data-hop-key]');
+        if (!row) return;
+        const key = row.getAttribute('data-hop-key');
+        if (!key) return;
+        const alreadyAcked = getHopAcked(key, lastStatus);
+        const hopName = row.querySelector('.hop-name')?.textContent || '';
+        const hopAmount = row.querySelector('.hop-meta')?.textContent || '';
+        const payload = {
+          key,
+          acked: !alreadyAcked,
+          hop_name: hopName || null,
+          amount: hopAmount || null,
+          recipe: currentRecipeData?.name || null,
+          brew_since: currentBrewSince ?? null,
+        };
+        postBrewAction('/api/hop-ack', payload)
+          .then(() => {
+            if (payload.acked) {
+              hopAckCache[key] = { acked: true };
+            } else {
+              delete hopAckCache[key];
+            }
+            updateHopSchedule(lastStatus);
+            const shouldSendAck = lastStatus?.state === 'waiting_ack' && lastStatus?.hop_event && hopName && String(lastStatus.hop_event).includes(hopName);
+            if (shouldSendAck) {
+              return postBrewAction('/api/ack');
+            }
+            return null;
+          })
+          .then(() => {
+            refreshStatus();
+            refreshBrewControl();
+          })
+          .catch((err) => {
+            setMainMessage(err.message);
+          });
+      }
+
+    async function ackFirstDueHop() {
+      const dueList = hopListDue || document.getElementById('hop-list-due');
+      if (!dueList) return false;
+      const row = dueList.querySelector('[data-hop-key]');
+      if (!row) return false;
+      const key = row.getAttribute('data-hop-key');
+      if (!key) return false;
+      const alreadyAcked = getHopAcked(key, lastStatus);
+      if (alreadyAcked) return false;
+      const hopName = row.querySelector('.hop-name')?.textContent || '';
+      const hopAmount = row.querySelector('.hop-meta')?.textContent || '';
+      const payload = {
+        key,
+        acked: true,
+        hop_name: hopName || null,
+        amount: hopAmount || null,
+        recipe: currentRecipeData?.name || null,
+        brew_since: currentBrewSince ?? null,
+      };
+      await postBrewAction('/api/hop-ack', payload);
+      hopAckCache[key] = { acked: true };
+      updateHopSchedule(lastStatus);
+      if (lastStatus?.state === 'waiting_ack') {
+        await postBrewAction('/api/ack');
+      }
+      return true;
+    }
+
+    if (hopListDue) hopListDue.addEventListener('click', hopListClickHandler);
+    if (hopListOpen) hopListOpen.addEventListener('click', hopListClickHandler);
+    if (hopListAcked) hopListAcked.addEventListener('click', hopListClickHandler);
+
+    document.getElementById('send-command').addEventListener('click', async () => {
+      const command = document.getElementById('command-select').value;
+      try {
+        await postBrewAction('/api/command', { command });
+        setMainMessage(`Befehl '${command}' gesendet.`);
+        refreshBrewControl();
+      } catch (err) {
+        setMainMessage(err.message);
+      }
+    });
+
+
+    async function runKeyboardCommand(value) {
+      const trimmed = value.trim();
+      try {
+        if (!trimmed) {
+          await postBrewAction('/api/ack');
+          setMainMessage('Start bestätigt.');
+        } else {
+          const normalized = trimmed.toLowerCase();
+          if (['start', 'stop', 'abort', 'hardware-off'].includes(normalized)) {
+            const endpoint = normalized === 'hardware-off' ? '/api/hardware-off' : `/api/${normalized}`;
+            await postBrewAction(endpoint, null);
+            setMainMessage(`Kommando '${normalized}' gesendet.`);
+          } else if (['pause', 'resume', 'skip', 'next', 'back'].includes(normalized)) {
+            const mapped = normalized === 'next' ? 'skip' : normalized;
+            await postBrewAction('/api/command', { command: mapped });
+            setMainMessage(`Kommando '${normalized}' gesendet.`);
+          } else if (normalized === 'status') {
+            const status = await fetch('/api/brew').then((res) => res.json());
+            setMainMessage(`Status: ${status.state || '—'}`);
+          } else {
+            setMainMessage('Unbekanntes Kommando.');
+          }
+        }
+        refreshStatus();
+        refreshBrewControl();
+      } catch (err) {
+        setMainMessage(err.message);
+      }
+    }
+
+    function shouldIgnoreGlobalKey(event) {
+      const target = event.target;
+      if (!target) {
+        return false;
+      }
+      const tag = target.tagName;
+      if (tag && ['INPUT', 'TEXTAREA', 'SELECT', 'OPTION', 'BUTTON'].includes(tag)) {
+        return true;
+      }
+      if (target.isContentEditable) {
+        return true;
+      }
+      return false;
+    }
+
+    document.addEventListener('keydown', async (event) => {
+      if (event.key !== 'Enter') {
+        return;
+      }
+      if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) {
+        return;
+      }
+      if (shouldIgnoreGlobalKey(event)) {
+        return;
+      }
+      event.preventDefault();
+      try {
+        const hopAcked = await ackFirstDueHop();
+        if (!hopAcked) {
+          await postBrewAction('/api/ack');
+          setMainMessage('Bestätigt (Enter).');
+        } else {
+          setMainMessage('Hopfengabe bestätigt (Enter).');
+        }
+        refreshStatus();
+        refreshBrewControl();
+      } catch (err) {
+        setMainMessage(err.message);
+      }
+    });
+
+    document.getElementById('select-recipe').addEventListener('click', async () => {
+      const select = document.getElementById('recipe-select');
+      const chosen = select.value;
+      try {
+        const res = await fetch('/api/select', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: chosen }),
+        });
+        if (!res.ok) throw new Error('Fehler');
+        const payload = await res.json();
+        currentSelection = payload;
+        setMainMessage(`Rezept '${payload.name}' gespeichert.`);
+        resetLiveDisplay();
+        renderRecipeDetails(payload.path);
+        refreshStatus();
+      } catch (err) {
+        setMainMessage(err.message || 'Rezept konnte nicht gespeichert werden.');
+      }
+    });
+
+    document.getElementById('recipe-select').addEventListener('change', (event) => {
+      resetLiveDisplay();
+      renderRecipeDetails(event.target.value);
+    });
+
+    showLogButton.addEventListener('click', () => {
+      loadLogContent(logSelect.value);
+    });
+    refreshLogButton.addEventListener('click', refreshLogList);
+    downloadLogButton.addEventListener('click', () => {
+      const selected = logSelect.options[logSelect.selectedIndex];
+      const url = selected?.dataset.url;
+      if (url) {
+        window.open(url, '_blank');
+      }
+    });
+    logSelect.addEventListener('change', () => {
+      const selected = logSelect.options[logSelect.selectedIndex];
+      if (selected) {
+        logStatus.textContent = `Auswahl: ${selected.textContent.split(' · ')[0]}`;
+        downloadLogButton.disabled = !selected.dataset.url;
+        logContent.textContent = 'Log auswählen und „Anzeigen“ klicken.';
+      } else {
+        logStatus.textContent = 'Keine Logdatei ausgewählt.';
+      }
+    });
+
+    resetLiveDisplay();
+    refreshStatus();
+    refreshBrewControl();
+    updateRecipeList();
+    refreshLogList();
+    refreshStartFeedback();
+    refreshBleConfig();
+    updateStatusBarHeight();
+    watchStatusBar();
+    resizeTempGraph();
+    window.addEventListener('resize', () => resizeTempGraph());
+    window.addEventListener('resize', updateStatusBarHeight);
+    setInterval(() => {
+      refreshStatus();
+      refreshBrewControl();
+    }, 1500);
+  </script>
+</body>
+</html>
