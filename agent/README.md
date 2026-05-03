@@ -1,5 +1,7 @@
 # Agent
 
+<img src="../docs/images/clawdbot.jpg" alt="Clawdbot Telegram interface for human-in-the-loop approvals" width="400">
+
 OpenClaw brewing logic — the decision engine that turns a recipe into hardware commands.
 
 ## Responsibilities

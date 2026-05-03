@@ -2,6 +2,10 @@
 
 **The operating system behind the world's first AI-brewed beer.**
 
+<p align="center">
+  <img src="docs/images/brewos-dashboard.jpg" alt="brewOS dashboard running Batch #001" width="700">
+</p>
+
 brewOS connects an AI agent ([OpenClaw](https://openclaw.ai)) to real brewing hardware (Grainfather G30) via Bluetooth Low Energy — letting a machine manage temperature ramps, pump cycles, and hop schedules while a human brewmaster keeps final say over every decision.
 
 Built for [Lobster Lager](https://lobsterlager.com). Batch #001 brewed February 21, 2026.
@@ -140,10 +144,12 @@ The agent suggests. The human decides. The beer benefits.
 
 ## Press
 
-- [OpenClaw Conf Vienna](https://openclaw.ai) — Live demo to 500 attendees (Feb 10, 2026)
-- [Peter Steinberger at TED2026](https://lobsterlager.com) — Lobster Lager as AI agent proof point
-- [Hanselminutes](https://lobsterlager.com) — Scott Hanselman podcast feature
-- [Trending Topics](https://lobsterlager.com) — Austrian tech press coverage
+- [NVIDIA GTC 2026 Keynote](https://www.youtube.com/live/jIviHI7fqyc?si=sfUAfsnHV7GtvyZs&t=6515) — Jensen Huang featured Lobster Lager on main stage (Apr 13, 2026)
+- [Peter Steinberger at TED2026](https://www.ted.com/talks/peter_steinberger_how_i_created_openclaw_the_breakthrough_ai_agent) — OpenClaw talk featuring Lobster Lager as proof point
+- [Hanselminutes](https://www.youtube.com/watch?v=Wm7tsiJ1nIo&t=1538s) — Scott Hanselman podcast with Peter Steinberger
+- [Trending Topics](https://www.trendingtopics.eu/oesterreicher-brauen-mit-ai-agent-bier-und-landen-auf-nvidia-hauptbuehne/) — "Österreicher brauen mit AI Agent Bier und landen auf NVIDIA Hauptbühne"
+- [36kr](https://eu.36kr.com/en/p/3678745353151110) — Chinese tech media coverage
+- [TikTok](https://www.tiktok.com/@nate.b.jones/video/7607957017243798815) — Nate B. Jones (466K followers)
 
 ---
 

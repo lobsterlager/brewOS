@@ -1,5 +1,7 @@
 # Brew Day Walkthrough
 
+<img src="images/brew-day-boil.jpg" alt="Rolling boil at 100°C on the balcony" width="600">
+
 How Batch #001 was brewed on February 21, 2026.
 
 ## Setup (07:30–08:15)

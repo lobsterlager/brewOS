@@ -1,5 +1,7 @@
 # Vision
 
+<img src="../docs/images/vision-setup.jpg" alt="Camera mounted above Grainfather G30" width="500">
+
 Computer vision layer for physical verification of brewing state.
 
 ## Purpose
