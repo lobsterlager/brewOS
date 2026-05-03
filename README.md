@@ -12,6 +12,22 @@ Built for [Lobster Lager](https://lobsterlager.com). Batch #001 brewed February 
 
 ---
 
+## Current Runtime Status
+
+The repository root currently contains the broader `brewOS` project scaffold and public-facing documentation.
+
+The **current working Grainfather G30 runtime release** lives under [`g30/`](g30/), including:
+
+- [`g30/gf_brew_flow.py`](g30/gf_brew_flow.py)
+- [`g30/dashboard_server.py`](g30/dashboard_server.py)
+- [`g30/dashboard/`](g30/dashboard/)
+- [`g30/recipes/`](g30/recipes/)
+- [`g30/tests/`](g30/tests/)
+
+If you are looking for the code that is currently used to run the brewing workflow, start there.
+
+---
+
 ## How It Works
 
 ```
