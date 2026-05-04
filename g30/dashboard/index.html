@@ -498,6 +498,101 @@
     .hidden {
       display: none;
     }
+    /* Splash Screen */
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    #splash.fade-out {
+      opacity: 0;
+      transform: scale(1.02);
+      pointer-events: none;
+    }
+    #splash .splash-logo {
+      width: 180px;
+      height: auto;
+      animation: splash-float 3s ease-in-out infinite;
+    }
+    @keyframes splash-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    #splash .splash-title {
+      font-family: 'Barlow Condensed', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 3rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--offwhite);
+      margin: 0;
+    }
+    #splash .splash-tagline {
+      font-family: 'Barlow Condensed', system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin: 0;
+    }
+    #splash .splash-status {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+    }
+    #splash .splash-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: splash-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes splash-pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    #splash .splash-enter {
+      margin-top: 1rem;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.85rem;
+      padding: 0.5rem 1.5rem;
+      border-radius: 999px;
+      box-shadow: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.08em;
+      opacity: 0;
+      animation: splash-fade-in 0.5s ease 2s forwards;
+    }
+    #splash .splash-enter:hover {
+      border-color: var(--amber);
+      color: var(--amber);
+      background: rgba(245, 166, 35, 0.08);
+    }
+    @keyframes splash-fade-in {
+      to { opacity: 1; }
+    }
+    #splash .splash-version {
+      position: absolute;
+      bottom: 2rem;
+      color: rgba(255, 255, 255, 0.2);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
     /* Stop button uses red */
     #stop-brew {
       background: var(--red);
@@ -514,9 +609,20 @@
   </style>
 </head>
 <body>
+  <div id="splash">
+    <img src="/media/lobster-lager-logo.png" alt="Lobster Lager" class="splash-logo" />
+    <h1 class="splash-title">brewOS</h1>
+    <p class="splash-tagline">Hold my claw.</p>
+    <div class="splash-status">
+      <span class="splash-dot"></span>
+      <span id="splash-status-text">Initializing systems...</span>
+    </div>
+    <button class="splash-enter" id="splash-enter">Enter Dashboard</button>
+    <span class="splash-version">brewOS v0.1 &middot; Lobster Lager &times; OpenClaw</span>
+  </div>
   <header>
     <div class="logo-row">
-      <img src="/media/lobster-lager-logo.svg" alt="Lobster Lager" class="brand-logo" />
+      <img src="/media/lobster-lager-logo.png" alt="Lobster Lager" class="brand-logo" />
       <img src="/media/openclaw-logo.svg" alt="OpenClaw" class="brand-logo" />
     </div>
     <h1>brewOS</h1>
@@ -642,6 +748,46 @@
     </div>
   </main>
   <script>
+    // Splash screen
+    (function initSplash() {
+      const splash = document.getElementById('splash');
+      const splashText = document.getElementById('splash-status-text');
+      const splashEnter = document.getElementById('splash-enter');
+      const messages = [
+        'Initializing systems...',
+        'Connecting BLE bridge...',
+        'Loading recipe database...',
+        'Calibrating sensors...',
+        'brewOS ready.',
+      ];
+      let msgIndex = 0;
+      const msgInterval = setInterval(() => {
+        msgIndex++;
+        if (msgIndex < messages.length) {
+          splashText.textContent = messages[msgIndex];
+        }
+        if (msgIndex >= messages.length - 1) {
+          clearInterval(msgInterval);
+        }
+      }, 600);
+
+      function dismissSplash() {
+        splash.classList.add('fade-out');
+        setTimeout(() => { splash.style.display = 'none'; }, 600);
+      }
+
+      splashEnter.addEventListener('click', dismissSplash);
+      document.addEventListener('keydown', function splashKey(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          if (splash.style.display !== 'none') {
+            e.preventDefault();
+            dismissSplash();
+            document.removeEventListener('keydown', splashKey);
+          }
+        }
+      });
+    })();
+
     let currentSelection = null;
     const logSelect = document.getElementById('log-select');
     const logStatus = document.getElementById('log-status');
