@@ -22,9 +22,6 @@
       --white: #FFFFFF;
       --offwhite: #F8F8FA;
 
-      --status-bar-height: 0px;
-      --status-bar-top: 64px;
-
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       color: var(--offwhite);
       background: var(--navy);
@@ -32,7 +29,6 @@
     body {
       margin: 0;
       padding: 1.4rem;
-      padding-top: var(--status-bar-height);
       background: var(--navy);
     }
     .ack-warning {
@@ -227,20 +223,14 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
     }
     #status-bar {
-      position: fixed;
-      top: var(--status-bar-top);
-      left: 0;
-      right: 0;
+      position: relative;
       z-index: 50;
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
       max-width: 900px;
-      margin: 0 auto;
-      padding: 0.6rem 0 0.8rem;
-      background: rgba(10, 15, 26, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      margin: 0.8rem auto;
+      padding: 0.6rem 0;
       align-items: stretch;
     }
     #message {
@@ -328,7 +318,9 @@
       #brew-control-card .actions { gap: 0.4rem; }
       #brew-control-card .actions button { font-size: 0.85rem; padding: 0.5rem 0.8rem; }
       #brew-control-card select { min-width: 120px; font-size: 0.85rem; }
-      .hop-row { grid-template-columns: 1fr auto; gap: 0.4rem; }
+      .hop-row { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+      .hop-timing { grid-column: 1 / -1; }
+      .hop-countdown { text-align: left; }
       .hop-timing, .hop-countdown { font-size: 0.8rem; }
       .hop-row button.secondary { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
       .brand-logo { max-height: 40px; }
@@ -399,13 +391,14 @@
     }
     .hop-row {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr) minmax(0, 0.8fr) auto;
-      gap: 0.6rem;
+      grid-template-columns: minmax(0, 2fr) minmax(80px, 1.2fr) minmax(50px, auto) auto;
+      gap: 0.5rem;
       align-items: center;
       padding: 0.6rem 0.7rem;
       border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.06);
       background: rgba(255, 255, 255, 0.03);
+      word-break: break-word;
     }
     .hop-row.due {
       border-color: rgba(245, 166, 35, 0.6);
@@ -1001,23 +994,8 @@
       });
     }
 
-    function updateStatusBarHeight() {
-      const bar = document.getElementById('status-bar');
-      if (!bar) return;
-      const height = bar.offsetHeight || 0;
-      const topOffset = parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue('--status-bar-top'),
-        10
-      ) || 0;
-      document.documentElement.style.setProperty('--status-bar-height', `${height + topOffset}px`);
-    }
-
-    function watchStatusBar() {
-      const bar = document.getElementById('status-bar');
-      if (!bar || typeof MutationObserver === 'undefined') return;
-      const observer = new MutationObserver(() => updateStatusBarHeight());
-      observer.observe(bar, { childList: true, subtree: true, characterData: true });
-    }
+    function updateStatusBarHeight() {}
+    function watchStatusBar() {}
 
     function updateTempGraph(temp) {
       if (!tempGraphCtx) {
