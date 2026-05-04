@@ -227,16 +227,15 @@
       z-index: 50;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
-      max-width: 900px;
-      margin: 0.8rem auto;
-      padding: 0.6rem 0;
+      gap: 0.4rem;
+      margin: 0.5rem 0;
+      padding: 0;
       align-items: stretch;
     }
     #message {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.15rem;
       width: 100%;
       text-align: center;
       color: var(--amber-light);
@@ -244,8 +243,9 @@
       border-radius: 10px;
       border: 1px solid rgba(245, 166, 35, 0.15);
       background: rgba(10, 15, 26, 0.6);
-      backdrop-filter: blur(8px);
-      line-height: 1.35;
+      line-height: 1.3;
+      font-size: 0.85rem;
+      box-sizing: border-box;
     }
     #message span {
       display: block;
@@ -262,15 +262,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 1rem;
+      gap: 0.5rem;
       margin: 0;
-      padding: 0.6rem 1rem;
-      border-radius: 12px;
+      padding: 0.35rem 0.8rem;
+      border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(8px);
-      font-size: 0.95rem;
-      width: 100%;
+      font-size: 0.85rem;
     }
     .start-feedback.start-success {
       border-color: rgba(34, 197, 94, 0.5);
@@ -689,7 +687,7 @@
         <div class="preheat-progress-bar" id="preheat-progress-bar"></div>
       </div>
     </div>
-    <div class="card span-3 col-9 row-2" id="hop-card">
+    <div class="card span-4 row-2" id="hop-card">
       <h2>Hopfengaben</h2>
       <div class="note" id="hop-summary">Rezept wird geladen…</div>
       <div class="note hop-backend-ack" id="hop-backend-ack">Backend-Ack: —</div>
@@ -706,14 +704,14 @@
         <div class="hop-list" id="hop-list-acked"></div>
       </div>
     </div>
-    <div class="card span-3 col-1 row-2" id="temp-card">
+    <div class="card span-4 row-2" id="temp-card">
       <h2>Ist-Temperatur</h2>
       <div class="value" id="temp-value">—</div>
       <div class="note" id="temp-note">Sensorwert in Echtzeit</div>
       <div class="note" id="temp-target">Soll: —</div>
       <div class="note" id="pump-heat">Pumpe: — · Heizung: — · Power: —</div>
     </div>
-    <div class="card span-3 col-4 row-2" id="timer-card">
+    <div class="card span-4 row-2" id="timer-card">
       <h2>Timer / Countdown</h2>
       <div class="value" id="brew-duration-value">—</div>
       <div class="note" id="brew-start-label">Kein Brauvorgang aktiv</div>
