@@ -1,4 +1,4 @@
-#!/Users/KriKri/gf-venv/bin/python
+#!/usr/bin/env python3
 """Konsistente Grainfather-Firmware für dein Lobster-Lager-Rezept.
 
 Das Script verbindet sich per BLE, folgt Schritt für Schritt deinem Prozess,
@@ -30,7 +30,7 @@ except ImportError:
     BleakScanner = None  # type: ignore
     BleakDeviceNotFoundError = BleakError = Exception  # type: ignore
 
-ADDRESS = "4B94A369-C146-CBE4-35BB-258575D08512"
+ADDRESS = os.getenv("GF_BLE_ADDRESS", "")
 NOTIFY_UUID = "0003cdd1-0000-1000-8000-00805f9b0131"
 WRITE_UUID = "0003cdd2-0000-1000-8000-00805f9b0131"
 SOUND = "/System/Library/Sounds/Glass.aiff"
@@ -299,10 +299,10 @@ async def discover_address(name_hint: str | None = None) -> str | None:
 
 
 async def resolve_ble_address() -> str | None:
-    env_address = os.getenv("GF_BLE_ADDRESS")
-    if env_address:
-        return env_address.strip()
-    return ADDRESS
+    address = os.getenv("GF_BLE_ADDRESS", "").strip()
+    if address:
+        return address
+    return None
 
 
 def register_hop_schedule(entries: list[Dict[str, Any]], boil_duration_min: float | None = None) -> None:

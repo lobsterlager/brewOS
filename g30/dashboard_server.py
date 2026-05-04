@@ -25,7 +25,7 @@ SELECTION_FILE = os.path.join(ROOT, "selected_recipe.json")
 DEFAULT_RECIPE_PATH = os.path.join(RECIPES_DIR, "test_sud_nr202.json")
 LOG_DIR = os.path.join(ROOT, "logs")
 BREW_PY = os.path.join(ROOT, "gf_brew_flow.py")
-PYTHON = "/Users/KriKri/gf-venv/bin/python"
+PYTHON = os.getenv("GF_PYTHON", "python3")
 TELEGRAM_NOTIFY_CONFIG = os.path.join(ROOT, "telegram_triggers.json")
 NOTIFIER_CMD = [
     PYTHON,
@@ -50,7 +50,7 @@ START_FEEDBACK: dict[str, object | None] = {
 
 
 def run_cancel_script() -> None:
-    cmd = ["/Users/KriKri/gf-venv/bin/python", "gf_all_off.py"]
+    cmd = [PYTHON, "gf_all_off.py"]
     subprocess.Popen(cmd, cwd=ROOT)
 
 
@@ -640,7 +640,8 @@ def main() -> None:
     ensure_status_file()
     cleanup_previous_runs()
     handler = partial(DashboardHandler, directory=ROOT)
-    with socketserver.TCPServer(("", PORT), handler) as httpd:
+    bind_address = os.getenv("GF_BIND_ADDRESS", "127.0.0.1")
+    with socketserver.TCPServer((bind_address, PORT), handler) as httpd:
         url = f"http://localhost:{PORT}/dashboard/index.html"
         print(f"Dashboard läuft unter {url}")
         webbrowser.open(url)

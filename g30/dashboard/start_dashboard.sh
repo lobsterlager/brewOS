@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WORKSPACE="/Users/KriKri/.openclaw/workspace"
-PORT=8002
-export GF_BLE_NAME="Grain"
-export GF_BLE_ADDRESS="4B94A369-C146-CBE4-35BB-258575D08512"
-PYTHON="/Users/KriKri/gf-venv/bin/python"
-LOGFILE="/Users/KriKri/.openclaw/workspace/logs/dashboard_server.log"
-cd "$WORKSPACE"
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+PORT="${GF_DASHBOARD_PORT:-8002}"
+GF_PYTHON="${GF_PYTHON:-python3}"
+LOGFILE="${GF_LOG_DIR:-$SCRIPT_DIR/logs}/dashboard_server.log"
+
+export GF_BLE_NAME="${GF_BLE_NAME:-Grain}"
+export GF_BLE_ADDRESS="${GF_BLE_ADDRESS:?Set GF_BLE_ADDRESS to your Grainfather BLE address}"
+
+cd "$SCRIPT_DIR"
 
 if command -v lsof >/dev/null 2>&1; then
   if lsof -ti ":$PORT" >/dev/null 2>&1; then
@@ -19,5 +21,5 @@ if command -v lsof >/dev/null 2>&1; then
 fi
 
 echo "Starte Brew-Dashboard auf Port $PORT..."
-mkdir -p /Users/KriKri/.openclaw/workspace/logs
-exec "$PYTHON" dashboard_server.py >> "$LOGFILE" 2>&1
+mkdir -p "$(dirname "$LOGFILE")"
+exec "$GF_PYTHON" dashboard_server.py >> "$LOGFILE" 2>&1

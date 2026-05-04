@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WORKSPACE="/Users/KriKri/.openclaw/workspace"
-PORT=8002
-LOG_DIR="$WORKSPACE/logs"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PORT="${GF_DASHBOARD_PORT:-8002}"
+LOG_DIR="${GF_LOG_DIR:-$SCRIPT_DIR/logs}"
 LOGFILE="$LOG_DIR/dashboard_server.log"
 
 echo "Stoppe laufenden Brew-Flow..."
@@ -21,6 +21,6 @@ fi
 
 echo "Starte Dashboard-Server neu..."
 mkdir -p "$LOG_DIR"
-nohup "$WORKSPACE/dashboard/start_dashboard.sh" >> "$LOGFILE" 2>&1 &
+nohup "$SCRIPT_DIR/dashboard/start_dashboard.sh" >> "$LOGFILE" 2>&1 &
 echo "Dashboard läuft. Öffne: http://localhost:$PORT/dashboard/index.html"
 echo "Brew-Flow bitte über das Dashboard mit 'Brau starten' starten."

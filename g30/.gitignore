@@ -10,4 +10,7 @@ venv/
 *.log
 *.sqlite3
 *.db
-
+selected_recipe.json
+status/
+logs/
+telegram_triggers.json
